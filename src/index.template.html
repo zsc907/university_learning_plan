@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>University Learning Plan — Interactive Edition</title>
+  <meta name="description" content="An interactive reading of a first-year CUHK university learning plan, guided by the SMART principle.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#article">Skip to the plan</a>
+
+  <header class="site-header">
+    <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Open contents" aria-expanded="false" aria-controls="sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+    </button>
+
+    <a class="brand" href="#top" aria-label="University Learning Plan, back to top">
+      <span class="brand-mark" aria-hidden="true">UL</span>
+      <span class="brand-text">University Learning Plan</span>
+    </a>
+  </header>
+
+  <div class="nav-scrim" id="navScrim"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Contents">
+      <div class="sidebar-head">
+        <p class="eyebrow">Contents</p>
+        <span class="sidebar-count">06 sections</span>
+      </div>
+
+      <button class="icon-btn sidebar-close" id="navClose" type="button" aria-label="Close contents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+
+      <nav aria-label="Sections">
+        <ol class="nav">
+          <li><a href="#introduction"><span class="i">01</span><span>Introduction</span></a></li>
+          <li><a href="#goal-1"><span class="i">02</span><span>Goal 1: Becoming an Independent Learner with Intellectual Curiosity</span></a></li>
+          <li><a href="#goal-2"><span class="i">03</span><span>Goal 2: Developing My Identity and Sense of Responsibility</span></a></li>
+          <li><a href="#goal-3"><span class="i">04</span><span>Goal 3: Achieving Balanced Personal Development</span></a></li>
+          <li><a href="#challenges"><span class="i">05</span><span>Challenges, Monitoring and Adjustment</span></a></li>
+          <li><a href="#conclusion"><span class="i">06</span><span>Conclusion: Becoming a Better Version of Myself</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <article class="article" id="article">
+        <header class="hero" id="top">
+          <p class="kicker">Guided by the SMART principle</p>
+          <h1>University <em>Learning</em> Plan</h1>
+          <div class="hero-meta">
+            <span>CUHK</span>
+            <span class="dot" aria-hidden="true"></span>
+            <span>First year</span>
+            <span class="dot" aria-hidden="true"></span>
+            <span>Three goals</span>
+            <span class="dot" aria-hidden="true"></span>
+            <span data-readtime>6 min read</span>
+          </div>
+          <div class="hero-orbit" aria-hidden="true">
+            <svg viewBox="0 0 240 240">
+              <circle cx="120" cy="120" r="116"/>
+              <circle cx="120" cy="120" r="86"/>
+              <circle cx="120" cy="120" r="56"/>
+              <circle cx="120" cy="120" r="26"/>
+              <path d="M120 0v16M120 224v16M0 120h16M224 120h16"/>
+            </svg>
+          </div>
+        </header>
+
+        <!-- ARTICLE_CONTENT -->
+
+        <div class="closing-rule" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <circle cx="12" cy="12" r="8.5"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <button class="to-top" id="toTop" type="button" aria-label="Back to top" title="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5M6 11l6-6 6 6"/>
+    </svg>
+  </button>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Figure viewer">
+    <div class="lb-bar">
+      <span class="lb-title" id="lbTitle">Figure</span>
+      <div class="lb-tools">
+        <button class="icon-btn" id="lbZoomOut" type="button" aria-label="Zoom out" title="Zoom out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+        </button>
+        <span class="lb-scale" id="lbScale" aria-live="off">100%</span>
+        <button class="icon-btn" id="lbZoomIn" type="button" aria-label="Zoom in" title="Zoom in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button class="icon-btn" id="lbReset" type="button" aria-label="Reset zoom" title="Reset zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.5 10a7.5 7.5 0 1 1 2 6.4"/>
+            <path d="M4 5v5h5"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="lbClose" type="button" aria-label="Close viewer" title="Close (Esc)" autofocus>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="lb-stage" id="lbStage">
+      <img id="lbImage" alt="Figure preview">
+    </div>
+
+    <div class="lb-foot">
+      <span>Drag to pan · Scroll to zoom · Double-click to toggle zoom</span>
+      <span><kbd>Esc</kbd> to close</span>
+    </div>
+  </dialog>
+</body>
+</html>
