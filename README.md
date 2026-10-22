@@ -15,7 +15,6 @@ build step, or network connection is required.
   and a collapsible drawer on small screens.
 - **Figure viewer** — open either document figure, then zoom with the
   toolbar, mouse wheel, or double-click, and drag to pan.
-- **Reading time** — estimated from the document text and shown beneath the title.
 - **Reading experience** — restrained reveal animations and a back-to-top button.
 
 Press <kbd>Esc</kbd> to close the contents drawer or the figure viewer.
@@ -47,8 +46,9 @@ README.md
 
 ## Rebuild
 
-The source document is read from `C:\Users\samue\Desktop\Version 2.docx`
-(change `SOURCE` in `tools/build_site.py` if it moves).
+The source document is read from
+`C:\Users\samue\Desktop\University Learning Plan.docx` (change `SOURCE` in
+`tools/build_site.py` if it moves).
 
 From the workspace root, with the bundled Python runtime:
 
