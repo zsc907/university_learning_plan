@@ -69,17 +69,6 @@
   });
 
   /* ------------------------------------------------------------------ *
-   * Reading time
-   * ------------------------------------------------------------------ */
-  if (article) {
-    const words = article.innerText.trim().split(/\s+/).filter(Boolean).length;
-    const minutes = Math.max(1, Math.round(words / 210));
-    $$("[data-readtime]").forEach((el) => {
-      el.textContent = `${minutes} min read`;
-    });
-  }
-
-  /* ------------------------------------------------------------------ *
    * Reveal sections as they approach the viewport
    * (only elements below the first screen are hidden, so a failure
    * never leaves the document invisible)

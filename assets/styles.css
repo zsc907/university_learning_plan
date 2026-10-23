@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    University Learning Plan 鈥?interactive edition
    A quiet editorial reading room for a first-year CUHK learning plan.
    ========================================================================== */
@@ -136,25 +136,8 @@ img { max-width: 100%; }
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
   text-decoration: none;
   min-width: 0;
-}
-
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 32px;
-  border: 1px solid var(--line-strong);
-  border-radius: 9px;
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  font-family: var(--serif);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
 }
 
 .brand-text {
@@ -345,27 +328,6 @@ img { max-width: 100%; }
 .hero h1 em {
   font-style: italic;
   color: var(--accent-ink);
-}
-
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 14px;
-  margin-top: 30px;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.hero-meta .dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--line-strong);
 }
 
 .hero-orbit {
@@ -884,15 +846,12 @@ dialog.lightbox[open] {
 @media (max-width: 720px) {
   :root { --header-h: 58px; }
 
-  .brand-mark { width: 30px; height: 30px; flex-basis: 30px; }
-
   .article {
     padding: 30px 20px 90px;
   }
 
   .hero { padding-top: 8px; padding-bottom: 32px; }
   .hero h1 { margin-top: 16px; }
-  .hero-meta { margin-top: 22px; font-size: 10px; letter-spacing: 0.08em; gap: 8px 10px; }
 
   .hero-orbit { display: none; }
 
@@ -1006,11 +965,6 @@ dialog.lightbox[open] {
   }
 
   .hero h1 em { color: var(--accent-ink); }
-
-  .hero-meta {
-    margin-top: 14pt;
-    color: var(--muted);
-  }
 
   .section {
     padding: 18pt 0;
