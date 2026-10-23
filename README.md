@@ -43,15 +43,6 @@ assets/favicon.svg       Favicon
 src/index.template.html  Shell template with the article placeholder
 README.md
 ```
-
-## Rebuild
-
-The source document is read from
-`C:\Users\samue\Desktop\Don't open first.docx` (change `SOURCE` in
-`tools/build_site.py` if it moves).
-
-From the workspace root, with the bundled Python runtime:
-
 ```powershell
 python tools/build_site.py
 ```
