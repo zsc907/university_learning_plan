@@ -6,7 +6,27 @@
   <title>University Learning Plan — Interactive Edition</title>
   <meta name="description" content="An interactive reading of a first-year CUHK university learning plan, guided by the SMART principle.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>
+    // File URLs cannot use font preloads (CORS), but the fonts still load via CSS.
+    if (location.protocol !== "file:") {
+      [
+        "assets/fonts/cormorant-garamond-normal.woff2",
+        "assets/fonts/cormorant-garamond-italic.woff2",
+        "assets/fonts/source-serif-4-normal.woff2",
+        "assets/fonts/inter-normal.woff2"
+      ].forEach((href) => {
+        const preload = document.createElement("link");
+        preload.rel = "preload";
+        preload.as = "font";
+        preload.type = "font/woff2";
+        preload.href = href;
+        preload.crossOrigin = "anonymous";
+        document.head.append(preload);
+      });
+    }
+  </script>
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/mindmap.css">
   <script src="assets/app.js" defer></script>
 </head>
 <body>
@@ -24,7 +44,7 @@
     </a>
   </header>
 
-  <div class="nav-scrim" id="navScrim"></div>
+  <div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
 
   <div class="layout">
     <aside class="sidebar" id="sidebar" aria-label="Contents">
@@ -40,11 +60,11 @@
       <nav aria-label="Sections">
         <ol class="nav">
           <li><a href="#introduction"><span class="i">01</span><span>Introduction</span></a></li>
-          <li><a href="#goal-1"><span class="i">02</span><span>Goal 1: Becoming an Independent Learner with Intellectual Curiosity</span></a></li>
-          <li><a href="#goal-2"><span class="i">03</span><span>Goal 2: Developing My Identity and Sense of Responsibility</span></a></li>
-          <li><a href="#goal-3"><span class="i">04</span><span>Goal 3: Achieving Balanced Personal Development</span></a></li>
-          <li><a href="#challenges"><span class="i">05</span><span>Challenges, Monitoring and Adjustment</span></a></li>
-          <li><a href="#conclusion"><span class="i">06</span><span>Conclusion: Becoming a Better Version of Myself</span></a></li>
+          <li><a href="#goal-1"><span class="i">02</span><span>Goal 1 · Independent learning</span></a></li>
+          <li><a href="#goal-2"><span class="i">03</span><span>Goal 2 · Identity &amp; responsibility</span></a></li>
+          <li><a href="#goal-3"><span class="i">04</span><span>Goal 3 · Balanced development</span></a></li>
+          <li><a href="#challenges"><span class="i">05</span><span>Review &amp; adjustment</span></a></li>
+          <li><a href="#conclusion"><span class="i">06</span><span>Conclusion</span></a></li>
         </ol>
       </nav>
     </aside>
@@ -53,26 +73,55 @@
       <article class="article" id="article">
         <header class="hero" id="top">
           <p class="kicker">Guided by the SMART principle</p>
-          <h1>University <em>Learning</em> Plan</h1>
-          <div class="hero-orbit" aria-hidden="true">
-            <svg viewBox="0 0 240 240">
-              <circle cx="120" cy="120" r="116"/>
-              <circle cx="120" cy="120" r="86"/>
-              <circle cx="120" cy="120" r="56"/>
-              <circle cx="120" cy="120" r="26"/>
-              <path d="M120 0v16M120 224v16M0 120h16M224 120h16"/>
-            </svg>
-          </div>
+          <h1 class="hero-title">
+            <span class="line">University</span>
+            <span class="line line--offset"><em>Learning</em> Plan</span>
+          </h1>
+          <nav class="mindmap" aria-label="Learning mind map">
+            <div class="mindmap-heading">
+              <span>Learning map</span>
+              <button class="map-replay" type="button" aria-label="Replay mind map animation" hidden>
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 7a6 6 0 1 1-.1 5M4 3v4h4"/></svg>
+                <span>Replay</span>
+              </button>
+            </div>
+            <div class="mindmap-layout">
+              <div class="mindmap-root"><span class="root-title">University learning</span><span class="root-caption">Three goals</span></div>
+              <div class="mindmap-tree">
+                <details class="mindmap-branch" open>
+                  <summary><span class="branch-number">01</span><span class="branch-name">Independent learning</span><svg class="branch-toggle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M3 8h10"/><path d="M8 3v10"/></svg></summary>
+                  <div class="branch-panel">
+                  <div class="branch-leaves">
+                    <a href="#goal-1"><span class="leaf-value">600 hours</span><span class="leaf-label">Independent learning · Year one</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                    <a href="#goal-1"><span class="leaf-value">10–20 hours</span><span class="leaf-label">AI-assisted coding · Each week</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                  </div>
+                  </div>
+                </details>
+                <details class="mindmap-branch" open>
+                  <summary><span class="branch-number">02</span><span class="branch-name">Identity &amp; responsibility</span><svg class="branch-toggle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M3 8h10"/><path d="M8 3v10"/></svg></summary>
+                  <div class="branch-panel">
+                  <div class="branch-leaves">
+                    <a href="#goal-2"><span class="leaf-value">May 2027</span><span class="leaf-label">Form a study group</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                    <a href="#goal-2"><span class="leaf-value">At least 1</span><span class="leaf-label">Organize an activity · Collect feedback</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                  </div>
+                  </div>
+                </details>
+                <details class="mindmap-branch" open>
+                  <summary><span class="branch-number">03</span><span class="branch-name">Balanced development</span><svg class="branch-toggle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M3 8h10"/><path d="M8 3v10"/></svg></summary>
+                  <div class="branch-panel">
+                  <div class="branch-leaves">
+                    <a href="#goal-3"><span class="leaf-value">6000 / 4000</span><span class="leaf-label">Steps · Weekdays / weekends</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                    <a href="#goal-3"><span class="leaf-value">7.5 hours</span><span class="leaf-label">Sleep · Most nights</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                  </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <div class="mindmap-hint">Expand a goal · Select an action to read</div>
+          </nav>
         </header>
 
         <!-- ARTICLE_CONTENT -->
-
-        <div class="closing-rule" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-            <circle cx="12" cy="12" r="8.5"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </div>
       </article>
     </main>
   </div>

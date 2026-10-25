@@ -7,11 +7,18 @@
 
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let reduceMotion = motionPreference.matches;
 
   const article = $("#article");
   const header = $(".site-header");
   const navLinks = $$(".nav a");
+  const contentsNav = $(".nav");
+  const mindmap = $(".mindmap");
+  const mapLinks = $$(".branch-leaves a");
+  const mapBranches = $$(".mindmap-branch");
+  const replayButton = $(".map-replay");
+  let destination = null;
   const sections = navLinks
     .map((link) => document.querySelector(link.getAttribute("href")))
     .filter(Boolean);
@@ -42,10 +49,20 @@
       navLinks.forEach((link) => {
         if (link.getAttribute("href") === `#${active.id}`) {
           link.setAttribute("aria-current", "true");
+          contentsNav?.style.setProperty("--marker-top", `${link.offsetTop + 12}px`);
+          contentsNav?.style.setProperty("--marker-height", `${Math.max(20, link.offsetHeight - 24)}px`);
+          contentsNav?.classList.add("has-marker");
         } else {
           link.removeAttribute("aria-current");
         }
       });
+
+      if (destination === active) {
+        active.classList.add("is-destination");
+        const arrived = active;
+        window.setTimeout(() => arrived.classList.remove("is-destination"), 1500);
+        destination = null;
+      }
     }
 
     if (toTop) {
@@ -62,37 +79,190 @@
   window.addEventListener("scroll", requestScrollUpdate, { passive: true });
   window.addEventListener("resize", requestScrollUpdate);
   window.addEventListener("load", requestScrollUpdate);
+  document.fonts?.ready.then(requestScrollUpdate);
   updateScrollUI();
+
+  /* Scroll motion never hides content before it reaches the viewport. */
+  const readingAnimations = new Map();
+  const initReadingMotion = () => {
+    if (!("IntersectionObserver" in window) || typeof article?.animate !== "function") return;
+    const blocks = sections.flatMap((section) =>
+      Array.from(section.children).filter((element) =>
+        element.matches(".section-head, .targets, p, .figure")
+      )
+    );
+    let previousReadingY = window.scrollY;
+    const observer = new IntersectionObserver((entries) => {
+      const direction = window.scrollY < previousReadingY ? -1 : 1;
+      previousReadingY = window.scrollY;
+      let sequence = 0;
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const element = entry.target;
+        if (element.dataset.readingState) return;
+        // A long anchor jump should not animate every intermediate chapter.
+        if (destination && !destination.contains(element)) return;
+        observer.unobserve(element);
+        element.dataset.readingState = "seen";
+        if (reduceMotion) return;
+
+        const travel = element.matches(".figure") ? 18 : element.matches(".section-head") ? 16 : 10;
+        const animation = element.animate([
+          { opacity: 0.12, transform: `translate3d(0, ${direction * travel}px, 0)` },
+          { opacity: 1, transform: "none" },
+        ], {
+          duration: element.matches(".figure") ? 580 : 500,
+          delay: Math.min(sequence++ * 40, 80),
+          easing: "cubic-bezier(0.22, 0.68, 0.24, 1)",
+          fill: "backwards",
+        });
+        element.dataset.readingState = "revealed";
+        readingAnimations.set(element, animation);
+        const cleanUp = () => {
+          if (readingAnimations.get(element) === animation) readingAnimations.delete(element);
+        };
+        animation.finished.then(cleanUp, cleanUp);
+      });
+    }, { rootMargin: `-${header?.offsetHeight || 58}px 0px -32px 0px`, threshold: 0 });
+
+    blocks.forEach((element) => {
+      const bounds = element.getBoundingClientRect();
+      if (bounds.top < window.innerHeight - 32 && bounds.bottom > (header?.offsetHeight || 58)) {
+        element.dataset.readingState = "seen";
+      } else observer.observe(element);
+    });
+  };
+  if (document.fonts) document.fonts.ready.then(initReadingMotion);
+  else initReadingMotion();
+
+  /* Native details and anchors keep the mind map usable without JavaScript. */
+  if (window.matchMedia("(max-width: 760px)").matches) {
+    mapBranches.forEach((branch) => { branch.open = false; });
+  }
+  const finishBranchMotions = [];
+  mapBranches.forEach((branch) => {
+    const summary = $("summary", branch);
+    const panel = $(".branch-panel", branch);
+    const leaves = $(".branch-leaves", branch);
+    let targetOpen = branch.open;
+    let animations = [];
+    let revision = 0;
+
+    branch.addEventListener("toggle", () => {
+      if (!animations.length) targetOpen = branch.open;
+      requestScrollUpdate();
+    });
+    if (!summary || !panel || !leaves || typeof branch.animate !== "function") return;
+    branch.classList.add("has-motion");
+
+    const cancelAnimations = () => {
+      animations.forEach((animation) => animation.cancel());
+      animations = [];
+    };
+    const clearSizing = () => {
+      branch.style.removeProperty("height");
+      panel.style.removeProperty("height");
+      leaves.style.removeProperty("opacity");
+    };
+    const settle = () => {
+      revision += 1;
+      cancelAnimations();
+      branch.open = targetOpen;
+      clearSizing();
+      branch.classList.remove("is-expanding", "is-collapsing");
+      summary.removeAttribute("aria-expanded");
+      panel.inert = false;
+      requestScrollUpdate();
+    };
+    finishBranchMotions.push(() => { if (animations.length) settle(); });
+
+    summary.addEventListener("click", (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const startHeight = branch.getBoundingClientRect().height;
+      const startPanelHeight = branch.open ? panel.getBoundingClientRect().height : 0;
+      const startOpacity = branch.open ? Number.parseFloat(getComputedStyle(leaves).opacity) : 0;
+      targetOpen = !targetOpen;
+      revision += 1;
+      const currentRevision = revision;
+      cancelAnimations();
+      clearSizing();
+      branch.classList.remove("is-expanding", "is-collapsing");
+
+      if (reduceMotion) {
+        settle();
+        return;
+      }
+
+      // Measure the desired natural layout, then animate from the current frame.
+      branch.open = targetOpen;
+      const endHeight = branch.getBoundingClientRect().height;
+      const endPanelHeight = targetOpen ? panel.getBoundingClientRect().height : 0;
+      branch.open = true;
+      branch.style.height = `${startHeight}px`;
+      panel.style.height = `${startPanelHeight}px`;
+      leaves.style.opacity = String(startOpacity);
+      summary.setAttribute("aria-expanded", String(targetOpen));
+      panel.inert = !targetOpen;
+      branch.classList.add(targetOpen ? "is-expanding" : "is-collapsing");
+
+      const timing = { duration: 280, easing: "cubic-bezier(0.22, 0.68, 0.24, 1)", fill: "both" };
+      animations = [
+        branch.animate([{ height: `${startHeight}px` }, { height: `${endHeight}px` }], timing),
+        panel.animate([{ height: `${startPanelHeight}px` }, { height: `${endPanelHeight}px` }], timing),
+        leaves.animate([{ opacity: startOpacity }, { opacity: targetOpen ? 1 : 0 }], timing),
+      ];
+      Promise.all(animations.map((animation) => animation.finished)).then(() => {
+        if (revision === currentRevision) settle();
+      }).catch(() => { /* A new click or viewport change superseded this transition. */ });
+    });
+  });
+  window.addEventListener("resize", () => finishBranchMotions.forEach((finish) => finish()), { passive: true });
+  motionPreference.addEventListener("change", (event) => {
+    reduceMotion = event.matches;
+    if (replayButton) replayButton.hidden = reduceMotion;
+    finishBranchMotions.forEach((finish) => finish());
+    if (reduceMotion) {
+      readingAnimations.forEach((animation) => animation.cancel());
+      readingAnimations.clear();
+    }
+  });
+
+  const replayMindmap = () => {
+    if (!mindmap || reduceMotion) return;
+    mindmap.classList.remove("is-entering");
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => mindmap.classList.add("is-entering"));
+    });
+  };
+  replayButton?.addEventListener("click", replayMindmap);
+  if (mindmap && !reduceMotion) {
+    if (replayButton) replayButton.hidden = false;
+    if ("IntersectionObserver" in window) {
+      const mapObserver = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          replayMindmap();
+          mapObserver.disconnect();
+        }
+      }, { threshold: 0.15 });
+      mapObserver.observe(mindmap);
+    } else replayMindmap();
+  }
+
+  [...navLinks, ...mapLinks].forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      destination = document.querySelector(link.getAttribute("href"));
+      if (!destination) return;
+      destination.setAttribute("tabindex", "-1");
+      destination.focus({ preventScroll: true });
+      requestScrollUpdate();
+    });
+  });
 
   toTop?.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
   });
-
-  /* ------------------------------------------------------------------ *
-   * Reveal sections as they approach the viewport
-   * (only elements below the first screen are hidden, so a failure
-   * never leaves the document invisible)
-   * ------------------------------------------------------------------ */
-  if (!reduceMotion && "IntersectionObserver" in window) {
-    const revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in");
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { rootMargin: "0px 0px -6% 0px", threshold: 0.05 }
-    );
-
-    $$(".section").forEach((section) => {
-      if (section.getBoundingClientRect().top > window.innerHeight * 0.95) {
-        section.classList.add("will-reveal");
-        revealObserver.observe(section);
-      }
-    });
-  }
 
   /* ------------------------------------------------------------------ *
    * Mobile contents drawer
@@ -101,7 +271,7 @@
   const navClose = $("#navClose");
   const navScrim = $("#navScrim");
 
-  const setNavOpen = (open) => {
+  const setNavOpen = (open, restoreFocus = true) => {
     const wasOpen = document.body.classList.contains("nav-open");
     document.body.classList.toggle("nav-open", open);
     $(".main")?.toggleAttribute("inert", open);
@@ -110,7 +280,7 @@
 
     if (open && !wasOpen) {
       navClose?.focus({ preventScroll: true });
-    } else if (!open && wasOpen) {
+    } else if (!open && wasOpen && restoreFocus) {
       navToggle?.focus({ preventScroll: true });
     }
   };
@@ -124,7 +294,7 @@
 
   navLinks.forEach((link) => {
     link.addEventListener("click", () => {
-      if (document.body.classList.contains("nav-open")) setNavOpen(false);
+      if (document.body.classList.contains("nav-open")) setNavOpen(false, false);
     });
   });
 
@@ -156,6 +326,8 @@
     if (!lbImage) return;
     lbImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
     if (lbScale) lbScale.textContent = `${Math.round(scale * 100)}%`;
+    if (lbZoomOut) lbZoomOut.disabled = scale <= 1.01;
+    if (lbZoomIn) lbZoomIn.disabled = scale >= 5;
     lbStage?.classList.toggle("can-pan", scale > 1.01);
     lbStage?.classList.toggle("is-zoomed", scale > 1.01);
   };
@@ -261,9 +433,9 @@
   /* ------------------------------------------------------------------ *
    * Close the mobile drawer when returning to desktop widths
    * ------------------------------------------------------------------ */
-  const desktopQuery = window.matchMedia("(min-width: 1025px)");
+  const desktopQuery = window.matchMedia("(min-width: 1121px)");
   const handleDesktop = (event) => {
-    if (event.matches) setNavOpen(false);
+    if (event.matches) setNavOpen(false, false);
   };
 
   if (desktopQuery.addEventListener) desktopQuery.addEventListener("change", handleDesktop);

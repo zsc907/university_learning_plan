@@ -6,7 +6,27 @@
   <title>University Learning Plan — Interactive Edition</title>
   <meta name="description" content="An interactive reading of a first-year CUHK university learning plan, guided by the SMART principle.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>
+    // File URLs cannot use font preloads (CORS), but the fonts still load via CSS.
+    if (location.protocol !== "file:") {
+      [
+        "assets/fonts/cormorant-garamond-normal.woff2",
+        "assets/fonts/cormorant-garamond-italic.woff2",
+        "assets/fonts/source-serif-4-normal.woff2",
+        "assets/fonts/inter-normal.woff2"
+      ].forEach((href) => {
+        const preload = document.createElement("link");
+        preload.rel = "preload";
+        preload.as = "font";
+        preload.type = "font/woff2";
+        preload.href = href;
+        preload.crossOrigin = "anonymous";
+        document.head.append(preload);
+      });
+    }
+  </script>
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/mindmap.css">
   <script src="assets/app.js" defer></script>
 </head>
 <body>
@@ -24,7 +44,7 @@
     </a>
   </header>
 
-  <div class="nav-scrim" id="navScrim"></div>
+  <div class="nav-scrim" id="navScrim" aria-hidden="true"></div>
 
   <div class="layout">
     <aside class="sidebar" id="sidebar" aria-label="Contents">
@@ -40,11 +60,11 @@
       <nav aria-label="Sections">
         <ol class="nav">
           <li><a href="#introduction"><span class="i">01</span><span>Introduction</span></a></li>
-          <li><a href="#goal-1"><span class="i">02</span><span>Goal 1: Becoming an Independent Learner with Intellectual Curiosity</span></a></li>
-          <li><a href="#goal-2"><span class="i">03</span><span>Goal 2: Developing My Identity and Sense of Responsibility</span></a></li>
-          <li><a href="#goal-3"><span class="i">04</span><span>Goal 3: Achieving Balanced Personal Development</span></a></li>
-          <li><a href="#challenges"><span class="i">05</span><span>Challenges, Monitoring and Adjustment</span></a></li>
-          <li><a href="#conclusion"><span class="i">06</span><span>Conclusion: Becoming a Better Version of Myself</span></a></li>
+          <li><a href="#goal-1"><span class="i">02</span><span>Goal 1 · Independent learning</span></a></li>
+          <li><a href="#goal-2"><span class="i">03</span><span>Goal 2 · Identity &amp; responsibility</span></a></li>
+          <li><a href="#goal-3"><span class="i">04</span><span>Goal 3 · Balanced development</span></a></li>
+          <li><a href="#challenges"><span class="i">05</span><span>Review &amp; adjustment</span></a></li>
+          <li><a href="#conclusion"><span class="i">06</span><span>Conclusion</span></a></li>
         </ol>
       </nav>
     </aside>
@@ -53,16 +73,52 @@
       <article class="article" id="article">
         <header class="hero" id="top">
           <p class="kicker">Guided by the SMART principle</p>
-          <h1>University <em>Learning</em> Plan</h1>
-          <div class="hero-orbit" aria-hidden="true">
-            <svg viewBox="0 0 240 240">
-              <circle cx="120" cy="120" r="116"/>
-              <circle cx="120" cy="120" r="86"/>
-              <circle cx="120" cy="120" r="56"/>
-              <circle cx="120" cy="120" r="26"/>
-              <path d="M120 0v16M120 224v16M0 120h16M224 120h16"/>
-            </svg>
-          </div>
+          <h1 class="hero-title">
+            <span class="line">University</span>
+            <span class="line line--offset"><em>Learning</em> Plan</span>
+          </h1>
+          <nav class="mindmap" aria-label="Learning mind map">
+            <div class="mindmap-heading">
+              <span>Learning map</span>
+              <button class="map-replay" type="button" aria-label="Replay mind map animation" hidden>
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 7a6 6 0 1 1-.1 5M4 3v4h4"/></svg>
+                <span>Replay</span>
+              </button>
+            </div>
+            <div class="mindmap-layout">
+              <div class="mindmap-root"><span class="root-title">University learning</span><span class="root-caption">Three goals</span></div>
+              <div class="mindmap-tree">
+                <details class="mindmap-branch" open>
+                  <summary><span class="branch-number">01</span><span class="branch-name">Independent learning</span><svg class="branch-toggle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M3 8h10"/><path d="M8 3v10"/></svg></summary>
+                  <div class="branch-panel">
+                  <div class="branch-leaves">
+                    <a href="#goal-1"><span class="leaf-value">600 hours</span><span class="leaf-label">Independent learning · Year one</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                    <a href="#goal-1"><span class="leaf-value">10–20 hours</span><span class="leaf-label">AI-assisted coding · Each week</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                  </div>
+                  </div>
+                </details>
+                <details class="mindmap-branch" open>
+                  <summary><span class="branch-number">02</span><span class="branch-name">Identity &amp; responsibility</span><svg class="branch-toggle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M3 8h10"/><path d="M8 3v10"/></svg></summary>
+                  <div class="branch-panel">
+                  <div class="branch-leaves">
+                    <a href="#goal-2"><span class="leaf-value">May 2027</span><span class="leaf-label">Form a study group</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                    <a href="#goal-2"><span class="leaf-value">At least 1</span><span class="leaf-label">Organize an activity · Collect feedback</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                  </div>
+                  </div>
+                </details>
+                <details class="mindmap-branch" open>
+                  <summary><span class="branch-number">03</span><span class="branch-name">Balanced development</span><svg class="branch-toggle" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M3 8h10"/><path d="M8 3v10"/></svg></summary>
+                  <div class="branch-panel">
+                  <div class="branch-leaves">
+                    <a href="#goal-3"><span class="leaf-value">6000 / 4000</span><span class="leaf-label">Steps · Weekdays / weekends</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                    <a href="#goal-3"><span class="leaf-value">7.5 hours</span><span class="leaf-label">Sleep · Most nights</span><span class="leaf-arrow" aria-hidden="true">↗</span></a>
+                  </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+            <div class="mindmap-hint">Expand a goal · Select an action to read</div>
+          </nav>
         </header>
 
                 <section class="section" id="introduction" aria-labelledby="introduction-title">
@@ -77,6 +133,19 @@
           <div class="section-head">
             <span class="num" aria-hidden="true">02</span>
             <h2 id="goal-1-title">Goal 1: Becoming an Independent Learner with Intellectual Curiosity</h2>
+          </div>
+          <div class="targets">
+            <div class="targets-label">Targets</div>
+            <div class="target-grid">
+            <div class="target">
+              <span class="v">600 hours</span>
+              <span class="l">Independent learning in the first year</span>
+            </div>
+            <div class="target">
+              <span class="v">10–20 hours</span>
+              <span class="l">AI-assisted coding each week</span>
+            </div>
+            </div>
           </div>
           <p>I’m interested in financial markets and aim to apply my mathematical skills to conduct quantitative analysis. At CUHK, I will work hard to establish a solid foundation in mathematics, statistics and computer science, which are essential to my academic interests and major. </p>
           <p>To be more specific, my academic goal is not merely to achieve a high GPA. I have made a list of courses I plan to take online. Most of them are offered by top universities in the world such as MIT, UC Berkeley and Stanford. Based on my planned schedule, I will devote at least 600 hours to independent learning during my first year at CUHK, so I will have sufficient time to prepare for my research, competitions and internships in the next three years.</p>
@@ -98,19 +167,6 @@
             </button>
             <figcaption><span class="cap-label">Figure 2 · Study OS</span></figcaption>
           </figure>
-          <div class="targets">
-            <div class="targets-label">Targets</div>
-            <div class="target-grid">
-            <div class="target">
-              <span class="v">600 hours</span>
-              <span class="l">Independent learning in the first year</span>
-            </div>
-            <div class="target">
-              <span class="v">10–20 hours</span>
-              <span class="l">AI-assisted coding each week</span>
-            </div>
-            </div>
-          </div>
         </section>
 
         <section class="section" id="goal-2" aria-labelledby="goal-2-title">
@@ -118,8 +174,6 @@
             <span class="num" aria-hidden="true">03</span>
             <h2 id="goal-2-title">Goal 2: Developing My Identity and Sense of Responsibility</h2>
           </div>
-          <p>Entering university gives me greater freedom to make my own decisions, but also requires me to take greater responsibility. Through interacting with people from different backgrounds and contributing to CUHK, I aim to build a stronger sense of belonging to the university.</p>
-          <p>To achieve this goal, I plan to find like-minded people and establish a student organization or society, where we can develop teamwork and communication skills through collaborative projects and the exchange of ideas. I hope to complete a research project or achieve a specific result in a competition, for example, a quant competition like IQC, before graduation. I will take responsibility for organizing at least one activity and seek feedback from other members, since this will help me evaluate my teamwork and leadership skills. To begin with, I plan to form a study group before May 2027, the end of my first year at CUHK. I will also take part in activities organized by Chung Chi College to develop my sense of responsibility and contribute to the College community. Through these experiences, I hope to become an active and responsible member of the CUHK community.</p>
           <div class="targets">
             <div class="targets-label">Targets</div>
             <div class="target-grid">
@@ -133,6 +187,8 @@
             </div>
             </div>
           </div>
+          <p>Entering university gives me greater freedom to make my own decisions, but also requires me to take greater responsibility. Through interacting with people from different backgrounds and contributing to CUHK, I aim to build a stronger sense of belonging to the university.</p>
+          <p>To achieve this goal, I plan to find like-minded people and establish a student organization or society, where we can develop teamwork and communication skills through collaborative projects and the exchange of ideas. I hope to complete a research project or achieve a specific result in a competition, for example, a quant competition like IQC, before graduation. I will take responsibility for organizing at least one activity and seek feedback from other members, since this will help me evaluate my teamwork and leadership skills. To begin with, I plan to form a study group before May 2027, the end of my first year at CUHK. I will also take part in activities organized by Chung Chi College to develop my sense of responsibility and contribute to the College community. Through these experiences, I hope to become an active and responsible member of the CUHK community.</p>
         </section>
 
         <section class="section" id="goal-3" aria-labelledby="goal-3-title">
@@ -140,8 +196,6 @@
             <span class="num" aria-hidden="true">04</span>
             <h2 id="goal-3-title">Goal 3: Achieving Balanced Personal Development</h2>
           </div>
-          <p>Inspired by Chung Chi College's emphasis on whole-person development, I believe university learning should extend beyond academic study. Besides enhancing skills related to my academic goals, I’m also interested in social sciences and humanities, such as history and politics. These subjects can broaden my perspectives and enrich my university experience by deepening my understanding of society. To further explore these interests, I plan to read at least one book on history or politics each semester. After finishing each book, I will write a short reflection on what I have learned and how it has influenced my understanding of society.</p>
-          <p>Maintaining a healthy and balanced lifestyle is also important. As I plan to spend considerable time on independent learning, managing my time and energy will be particularly important. I plan to walk at least 6000 steps on weekdays and 4000 steps at weekends. Every day while taking a shower, I will review my daily schedule and reflect on my physical and mental well-being. I aim for around 7.5 hours of sleep on most nights to keep me healthy and efficient during the day. By May 2027, I hope to have developed sustainable habits that allow me to balance academic achievement with personal well-being.</p>
           <div class="targets">
             <div class="targets-label">Targets</div>
             <div class="target-grid">
@@ -155,6 +209,8 @@
             </div>
             </div>
           </div>
+          <p>Inspired by Chung Chi College's emphasis on whole-person development, I believe university learning should extend beyond academic study. Besides enhancing skills related to my academic goals, I’m also interested in social sciences and humanities, such as history and politics. These subjects can broaden my perspectives and enrich my university experience by deepening my understanding of society. To further explore these interests, I plan to read at least one book on history or politics each semester. After finishing each book, I will write a short reflection on what I have learned and how it has influenced my understanding of society.</p>
+          <p>Maintaining a healthy and balanced lifestyle is also important. As I plan to spend considerable time on independent learning, managing my time and energy will be particularly important. I plan to walk at least 6000 steps on weekdays and 4000 steps at weekends. Every day while taking a shower, I will review my daily schedule and reflect on my physical and mental well-being. I aim for around 7.5 hours of sleep on most nights to keep me healthy and efficient during the day. By May 2027, I hope to have developed sustainable habits that allow me to balance academic achievement with personal well-being.</p>
         </section>
 
         <section class="section" id="challenges" aria-labelledby="challenges-title">
@@ -172,13 +228,6 @@
           </div>
           <p>By achieving these three goals, I hope to become not only a more capable learner, but also a responsible and well-rounded individual. I believe university education is a continuous process of learning, reflection and personal growth. This plan will serve as a foundation for my development throughout my university years.</p>
         </section>
-
-        <div class="closing-rule" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-            <circle cx="12" cy="12" r="8.5"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </div>
       </article>
     </main>
   </div>
